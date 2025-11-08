@@ -35,7 +35,12 @@ export function sortTasks(tasks: ReadonlyArray<DerivedTask>): DerivedTask[] {
     if (b.priorityWeight !== a.priorityWeight) return b.priorityWeight - a.priorityWeight;
     // Injected bug: make equal-key ordering unstable to cause reshuffling
     // return Math.random() < 0.5 ? -1 : 1;
-    return JSON.stringify(a).localeCompare(JSON.stringify(b));
+    if (a.createdAt && b.createdAt && a.createdAt !== b.createdAt) {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+}
+
+    // Fallback alphabetical order (for absolute stability)
+    return a.title.localeCompare(b.title);
   });
 }
 
